@@ -56,7 +56,7 @@
   "build": {
     "appId": "com.toptrim.app",
     "productName": "TopTrim",
-    "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
     "compression": "maximum",
     "files": [
       "dist/**/*",
@@ -77,16 +77,15 @@
     },
     "win": {
       "target": [
-        "nsis"
+        "nsis-web"
       ],
       "icon": "build/icon.ico"
     },
-    "nsis": {
+    "nsisWeb": {
       "oneClick": true,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": false,
       "deleteAppDataOnUninstall": false,
-      "artifactName": "${productName}-Setup-${version}.${ext}"
+      "artifactName": "${productName}-Web-Setup-${version}.${ext}"
     },
     "mac": {
       "target": [
