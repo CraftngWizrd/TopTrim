@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      No remote host appears in any directive, so a compromised renderer has no
+      network channel to exfiltrate over. 'wasm-unsafe-eval' (not full
+      'unsafe-eval') lets ffmpeg.wasm/Whisper compile WebAssembly without
+      permitting JS eval. object/base-uri/form-action/frame are locked so a
+      crafted <base>/<form>/<object> can't become a redirect or exfil channel.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' toptrim: app: blob: data:;
+        script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob:;
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' toptrim: blob: data:;
+        media-src 'self' toptrim: blob: data:;
+        font-src 'self' data:;
+        connect-src 'self' toptrim: app: blob: data:;
+        worker-src 'self' blob:;
+        object-src 'none';
+        base-uri 'none';
+        form-action 'none';
+        frame-src 'none';
+      "
+    />
+    <title>TopTrim</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

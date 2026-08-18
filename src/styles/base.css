@@ -1,0 +1,442 @@
+/* Reset + primitives. Every control here is hand-built — no component library. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+}
+
+::selection {
+  background: var(--accent-glow);
+  color: var(--text-primary);
+}
+
+/* ---------- Scrollbars ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+  background-clip: content-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 100ms ease, color 100ms ease, border-color 100ms ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Solid green. No gradient, ever. */
+.btn-primary {
+  background: var(--accent);
+  color: #111113;
+  font-weight: 600;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-dim);
+}
+
+.btn-secondary {
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+}
+
+.btn-ghost {
+  color: var(--text-secondary);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+}
+
+.btn-danger {
+  color: var(--text-secondary);
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn-sm {
+  height: 24px;
+  padding: 0 8px;
+  font-size: 11px;
+}
+.btn-icon {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}
+
+/* ---------- Inputs ---------- */
+.input {
+  height: 26px;
+  padding: 0 8px;
+  background: var(--bg);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 100ms ease, background-color 100ms ease;
+  user-select: text;
+}
+.input:hover {
+  border-color: var(--border-strong);
+}
+.input:focus {
+  border-color: var(--accent);
+  background: var(--bg-raised);
+}
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.input-num {
+  width: 52px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* ---------- Select ---------- */
+.select {
+  height: 26px;
+  padding: 0 24px 0 8px;
+  background: var(--bg) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' fill='none' stroke='%23999590' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/></svg>")
+    no-repeat right 7px center;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  appearance: none;
+  outline: none;
+  transition: border-color 100ms ease;
+}
+.select:hover {
+  border-color: var(--border-strong);
+}
+.select:focus {
+  border-color: var(--accent);
+}
+.select option {
+  background: var(--bg-elevated);
+}
+
+/* ---------- Panels ---------- */
+.panel {
+  background: var(--bg-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.panel-section {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+/* ---------- Context menu ---------- */
+.context-menu {
+  position: fixed;
+  z-index: 9000;
+  background: #1f1f26;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: var(--shadow-menu);
+  min-width: 180px;
+}
+
+.context-item {
+  padding: 6px 10px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 100ms ease, color 100ms ease;
+}
+.context-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+.context-item.danger:hover {
+  background: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+}
+.context-item.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.context-shortcut {
+  margin-left: auto;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-mono);
+}
+.context-sep {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 4px 6px;
+}
+
+/* ---------- Tooltip ---------- */
+.tooltip {
+  position: fixed;
+  z-index: 9500;
+  padding: 4px 7px;
+  background: #000;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--text-primary);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.tooltip-key {
+  margin-left: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
+/* ---------- Modal ---------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 8000;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.modal {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
+  min-width: 380px;
+  max-height: 84vh;
+  display: flex;
+  flex-direction: column;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px 10px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+}
+.modal-body {
+  padding: 4px 16px 14px;
+  overflow-y: auto;
+}
+.modal-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* ---------- Shimmer (storyboard loading) ---------- */
+@keyframes tt-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.02) 25%,
+    rgba(255, 255, 255, 0.07) 37%,
+    rgba(255, 255, 255, 0.02) 63%
+  );
+  background-size: 200% 100%;
+  animation: tt-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes tt-spin {
+  to { transform: rotate(360deg); }
+}
+.spin {
+  animation: tt-spin 800ms linear infinite;
+}
+
+/* ---------- Drag region ----------
+ *
+ * The OS moves the window, not us.
+ *
+ * Moving it by hand with setBounds/setPosition cannot preserve size on a
+ * fractionally-scaled display. Measured on a 1.25x screen over 120 simulated
+ * moves of a 1200x760 window:
+ *
+ *   setPosition                  1200x760 -> 1380x933   (grows every call)
+ *   setBounds, size re-read      1200x760 -> 1380x933
+ *   setBounds, size locked       1200x760 -> 1202x762   (bounded, still jitters)
+ *   setBounds in physical px     1500x950 -> 1503x953   (same)
+ *
+ * Every variant re-rounds the DIP<->device conversion. A native caption drag
+ * cannot resize the window at all, and it brings Aero Snap with it for free.
+ * The earlier failure was an absolute overlay painting over the bar and
+ * subtracting it from the draggable region — see .home::before.
+ */
+/*
+ * `-webkit-app-region` is NOT inherited. Setting it on the bar alone leaves
+ * every child computing `none`, and because the bar's children cover it edge
+ * to edge, no pressable pixel is ever draggable. Measured in Electron:
+ *
+ *   .bar -> drag     .brand -> none     .center -> none
+ *
+ * Descendants have to opt in explicitly. This is the actual reason the title
+ * bar could not be dragged.
+ */
+.drag-region,
+.drag-region * {
+  -webkit-app-region: drag;
+  app-region: drag; /* unprefixed is the current name; Chromium 128 honours it */
+}
+
+/* Dragging must never start a text selection in the bar. */
+.drag-region {
+  user-select: none;
+}
+
+/*
+ * Controls opt back out. Listed after the rule above because several match at
+ * equal specificity, where the later rule wins.
+ */
+.no-drag,
+.no-drag *,
+.drag-region button,
+.drag-region button *,
+.drag-region input,
+.drag-region select,
+.drag-region textarea,
+.drag-region a,
+.drag-region [role='button'],
+.drag-region [role='button'] *,
+/* Popovers opened from the bar are DOM descendants of it even when they
+   overhang it, so they need the exemption too or their rows can't be picked. */
+.drag-region .context-menu,
+.drag-region .context-menu * {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- brand ---------- */
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+/* Two-tone, matching the app icon: muted grey then electric green. */
+.wordmark-top {
+  color: var(--text-secondary);
+}
+.wordmark-trim {
+  color: var(--accent);
+  margin-left: -0.04em;
+}
+.logo-mark {
+  flex: 0 0 auto;
+  display: block;
+}
+
+.scroll-y {
+  overflow-y: auto;
+  overflow-x: hidden;
+}

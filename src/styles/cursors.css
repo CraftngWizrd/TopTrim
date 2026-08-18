@@ -1,0 +1,41 @@
+/* Section 14 — every element gets the cursor that describes what it does. */
+
+.playhead-head { cursor: ew-resize; }
+.tl-clip { cursor: grab; }
+.tl-clip:active { cursor: grabbing; }
+.clip-trim-left,
+.clip-trim-right { cursor: ew-resize; }
+.panel-divider-v { cursor: col-resize; }
+.panel-divider-h { cursor: row-resize; }
+.selection-handle-corner { cursor: nwse-resize; }
+.selection-handle-corner-alt { cursor: nesw-resize; }
+.selection-handle-edge-h { cursor: ns-resize; }
+.selection-handle-edge-v { cursor: ew-resize; }
+.selection-handle-rotate { cursor: crosshair; }
+.preview-canvas.has-selection { cursor: move; }
+.media-thumb { cursor: pointer; }
+.tl-ruler { cursor: pointer; }
+.property-slider { cursor: ew-resize; }
+.property-input { cursor: text; }
+.asset-tab,
+.tl-tool-btn,
+button { cursor: pointer; }
+[disabled],
+button:disabled { cursor: not-allowed; opacity: 0.4; }
+.kf-diamond { cursor: pointer; }
+.volume-slider { cursor: ew-resize; }
+
+/* Timeline surface cursors driven by the hit-test in TimelineCanvas. */
+.tl-surface[data-cursor='default'] { cursor: default; }
+.tl-surface[data-cursor='grab'] { cursor: grab; }
+.tl-surface[data-cursor='grabbing'] { cursor: grabbing; }
+.tl-surface[data-cursor='ew-resize'] { cursor: ew-resize; }
+.tl-surface[data-cursor='pointer'] { cursor: pointer; }
+.tl-surface[data-cursor='crosshair'] { cursor: crosshair; }
+
+/* Global drag states override everything while a gesture is live. */
+body[data-dragging='clip'] * { cursor: grabbing !important; }
+body[data-dragging='trim'] * { cursor: ew-resize !important; }
+body[data-dragging='scrub'] * { cursor: ew-resize !important; }
+body[data-dragging='col'] * { cursor: col-resize !important; }
+body[data-dragging='row'] * { cursor: row-resize !important; }

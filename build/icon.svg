@@ -1,0 +1,64 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    TopTrim app mark.
+
+    Same family as the app-store editors: a heavily rounded dark square with one
+    bold geometric glyph. The glyph is a play triangle sliced by a diagonal cut
+    with the halves slid apart — play plus trim, which is the whole app in one
+    shape. Electric green leading half, dark grey trailing half, so it reads
+    two-tone down to 32px.
+
+    Geometry notes, because the numbers are not arbitrary:
+      - The triangle fills ~59% of the canvas width. Smaller than this and the
+        mark drowns in padding on a taskbar; the first pass at 42% was unusable
+        at 64px.
+      - It spans x 235..835 so its bounding box centre lands at 535, not 512. A
+        play triangle centred on its bounding box looks left-heavy; the nudge
+        right is the usual optical correction.
+      - The cut sits below the centroid, at y 572 rather than 512. Through the
+        centroid the grey half swallows the apex and visually outweighs the
+        green; dropping the line hands the larger share to the brand colour.
+      - The two clip regions are offset along the cut's normal by half the gap
+        each, which is what actually opens the slice; translating the halves
+        alone would leave them touching at the clip edge.
+      - The grey is #55555F rather than something darker so it still separates
+        from the #111113 background at 32px, where a near-black half just reads
+        as a drop shadow.
+  -->
+  <defs>
+    <clipPath id="squircle">
+      <rect x="0" y="0" width="1024" height="1024" rx="232" ry="232" />
+    </clipPath>
+
+    <!-- Above the cut line, pulled back along the normal by half the gap. -->
+    <clipPath id="cutTop">
+      <polygon points="-661,1060 1513,44 1513,-420 -661,-420" />
+    </clipPath>
+    <!-- Below the cut line, pushed forward by half the gap. -->
+    <clipPath id="cutBottom">
+      <polygon points="-643,1100 1531,84 1531,1440 -643,1440" />
+    </clipPath>
+
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.06" />
+      <stop offset="0.6" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <g clip-path="url(#squircle)">
+    <rect width="1024" height="1024" fill="#111113" />
+    <rect width="1024" height="1024" fill="url(#sheen)" />
+
+    <!-- Leading half: electric green, slid up-left along the cut normal. -->
+    <g clip-path="url(#cutTop)">
+      <polygon points="235,182 235,842 835,512" fill="#00E676" stroke="#00E676"
+               stroke-width="34" stroke-linejoin="round" transform="translate(-10,-21)" />
+    </g>
+
+    <!-- Trailing half: dark grey, slid down-right so the slice opens. -->
+    <g clip-path="url(#cutBottom)">
+      <polygon points="235,182 235,842 835,512" fill="#55555F" stroke="#55555F"
+               stroke-width="34" stroke-linejoin="round" transform="translate(10,21)" />
+    </g>
+  </g>
+</svg>

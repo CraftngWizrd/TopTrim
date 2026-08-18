@@ -1,0 +1,478 @@
+/* Home screen — project manager */
+
+.home {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg);
+}
+
+/*
+ * Colour washes in two opposing corners — electric green top-left, the logo's
+ * cooler grey bottom-right. Set on the diagonal so the page has movement across
+ * it rather than a single blob in the middle, and kept low-opacity so project
+ * covers stay the brightest thing on screen.
+ */
+.home::before {
+  content: '';
+  position: absolute;
+  /*
+    Starts BELOW the title bar. A full-page overlay sits on top of the drag
+    strip and Chromium subtracts it from the draggable region — pointer-events
+    does not matter, app-region is computed from paint order. That is why the
+    window could not be dragged by its top edge.
+  */
+  top: var(--titlebar-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Kept tight to the corners: a wide falloff washed across the middle of the
+     page and dulled the project covers, which should be the brightest thing
+     on screen. */
+  background:
+    radial-gradient(360px 260px at 0% 0%, rgba(0, 230, 118, 0.15), transparent 55%),
+    radial-gradient(340px 250px at 100% 100%, rgba(126, 134, 196, 0.14), transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Small saturated cores right in the corners, so the colour reads as
+   deliberate rather than as a vignette that did not quite work. */
+.home-corner {
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(38px);
+  opacity: 0.42;
+}
+.home-corner.is-tl {
+  /* Kept clear of the title bar for the same reason as the wash above. */
+  top: var(--titlebar-h);
+  left: -76px;
+  background: radial-gradient(circle, rgba(0, 230, 118, 0.6), transparent 64%);
+}
+.home-corner.is-br {
+  right: -76px;
+  bottom: -76px;
+  background: radial-gradient(circle, rgba(126, 134, 196, 0.55), transparent 64%);
+}
+
+/* Content sits above the washes. */
+.home-titlebar,
+.home-scroll {
+  z-index: 1;
+}
+
+.home-titlebar {
+  position: relative;
+  flex: 0 0 var(--titlebar-h);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0;
+}
+
+/* Windows-style controls: right-aligned, full-height, red close. */
+.win-controls {
+  display: flex;
+  align-items: stretch;
+  align-self: stretch;
+  margin-left: auto;
+}
+.win-btn {
+  width: 46px;
+  height: 100%;
+  min-height: var(--titlebar-h);
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text-secondary);
+  transition: background-color 100ms ease, color 100ms ease;
+}
+.win-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+.win-btn:active {
+  background: rgba(255, 255, 255, 0.04);
+}
+.win-btn.is-close:hover {
+  background: #c42b1c;
+  color: #fff;
+}
+.win-btn.is-close:active {
+  background: #b0271a;
+}
+
+.home-scroll {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: 0 40px 56px;
+}
+
+/* ---------- header ---------- */
+.home-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 44px 0 34px;
+}
+
+.home-tagline {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-align: center;
+  max-width: 470px;
+  line-height: 1.6;
+}
+
+.home-badges {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+.home-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+.home-badge svg {
+  color: var(--accent);
+}
+
+.home-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* ---------- toolbar ---------- */
+.home-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1180px;
+  margin: 0 auto 16px;
+}
+
+.home-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 340px;
+  height: 30px;
+  padding: 0 10px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-tertiary);
+  transition: border-color 120ms ease;
+}
+.home-search:focus-within {
+  border-color: var(--accent);
+}
+.home-search-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 12px;
+  color: var(--text-primary);
+  user-select: text;
+}
+.home-search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.home-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  padding: 2px 7px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+
+.home-sort {
+  margin-left: auto;
+}
+
+/* ---------- grid ---------- */
+.home-section {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 18px;
+}
+
+/* "New project" as the first tile, so the primary action lives with the work. */
+.project-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  aspect-ratio: 16 / 9;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease, transform 140ms ease;
+}
+.project-new:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-subtle);
+  transform: translateY(-2px);
+}
+.project-new-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+
+/* ---------- project card ---------- */
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  outline: none;
+}
+
+.project-thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+  cursor: pointer;
+}
+.project-card:hover .project-thumb,
+.project-card:focus-visible .project-thumb {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--accent-glow);
+}
+.project-thumb img {
+  width: 100%;
+  height: 100%;
+  /* Contain, not cover: a portrait project should read as portrait on its
+     card instead of being cropped into a landscape sliver. */
+  object-fit: contain;
+  background: #000;
+  display: block;
+}
+.project-thumb-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tertiary);
+  background: var(--bg-raised);
+}
+
+.project-duration {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.74);
+  font-size: 9.5px;
+  color: var(--text-primary);
+}
+
+.project-ratio {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.66);
+  font-size: 9px;
+  color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+.project-card:hover .project-ratio {
+  opacity: 1;
+}
+
+.project-open {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(10, 9, 13, 0.62);
+  border: none;
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+.project-card:hover .project-open {
+  opacity: 1;
+}
+
+.project-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.project-name-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.project-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Always visible: hiding it until hover made it undiscoverable, which is the
+   problem the button exists to solve. */
+.project-menu-btn {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  color: var(--text-secondary);
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.project-card:hover .project-menu-btn {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+.project-menu-btn:hover,
+.project-menu-btn:focus-visible {
+  background: var(--bg-elevated);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.project-sub {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+}
+.project-dot {
+  opacity: 0.5;
+}
+
+.project-card.is-skeleton {
+  pointer-events: none;
+}
+.skeleton-line {
+  height: 9px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ---------- empty ---------- */
+.home-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 72px 0;
+  color: var(--text-tertiary);
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-lg);
+}
+.home-empty-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+.home-empty-hint {
+  font-size: 12px;
+  max-width: 340px;
+  text-align: center;
+  line-height: 1.65;
+}
+
+/* ---------- drop / busy overlays ---------- */
+.home.is-drop::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius-lg);
+  background: var(--accent-subtle);
+  pointer-events: none;
+}
+.home-dropzone {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+.home-busy {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+  font-size: 12px;
+  color: var(--text-secondary);
+}

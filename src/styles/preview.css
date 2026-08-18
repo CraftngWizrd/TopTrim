@@ -1,0 +1,240 @@
+/* Centre preview monitor */
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.preview-topbar {
+  flex: 0 0 26px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+}
+.preview-timecode {
+  font-size: 11px;
+  color: var(--text-primary);
+}
+.preview-duration {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.preview-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  overflow: hidden;
+}
+
+.preview-canvas {
+  position: relative;
+  background: #000;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--border-subtle);
+}
+
+.preview-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  opacity: 0;
+  transform-origin: center;
+  will-change: transform, filter, opacity;
+}
+
+.compositor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.comp-layer {
+  position: absolute;
+  display: none;
+  transform-origin: center;
+  will-change: transform, filter, opacity;
+}
+
+/* Selection chrome lives in SelectionOverlay so there is exactly one set of
+   handles and one outline, whatever kind of layer is selected. */
+
+.comp-image,
+.comp-sticker {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.comp-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 90vw;
+}
+
+/* ---------- selection / transform handles ---------- */
+.selection-box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
+  z-index: 5;
+  cursor: move;
+}
+
+.selection-outline {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+/* Crop mode reads differently on purpose: dashed amber, rule-of-thirds guides,
+   corner brackets — so it is never mistaken for a resize. */
+.selection-box.is-crop .selection-outline {
+  border: 1px dashed var(--warning);
+}
+.selection-box.is-crop .selection-handle {
+  background: var(--warning);
+  border-radius: 1px;
+  width: 11px;
+  height: 11px;
+  margin: -6px 0 0 -6px;
+}
+.selection-thirds {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, transparent 33.33%, rgba(255, 255, 255, 0.22) 33.33%, rgba(255, 255, 255, 0.22) calc(33.33% + 1px), transparent calc(33.33% + 1px)),
+    linear-gradient(to right, transparent 66.66%, rgba(255, 255, 255, 0.22) 66.66%, rgba(255, 255, 255, 0.22) calc(66.66% + 1px), transparent calc(66.66% + 1px)),
+    linear-gradient(to bottom, transparent 33.33%, rgba(255, 255, 255, 0.22) 33.33%, rgba(255, 255, 255, 0.22) calc(33.33% + 1px), transparent calc(33.33% + 1px)),
+    linear-gradient(to bottom, transparent 66.66%, rgba(255, 255, 255, 0.22) 66.66%, rgba(255, 255, 255, 0.22) calc(66.66% + 1px), transparent calc(66.66% + 1px));
+}
+
+.selection-handle {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  margin: -5px 0 0 -5px;
+  border: 1px solid #111113;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: transform 90ms ease;
+}
+.selection-handle:hover {
+  transform: scale(1.35);
+}
+
+.selection-handle-rotate {
+  border-radius: 50%;
+  background: var(--text-primary);
+}
+
+.selection-rotate-arm {
+  position: absolute;
+  left: 50%;
+  top: -26px;
+  width: 1px;
+  height: 26px;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+.selection-readout {
+  position: absolute;
+  left: 50%;
+  bottom: -20px;
+  transform: translateX(-50%);
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.72);
+  font-size: 9.5px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.preview-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+/* ---------- transport ---------- */
+.preview-transport {
+  flex: 0 0 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.transport-left,
+.transport-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.transport-right {
+  justify-content: flex-end;
+}
+.transport-center {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.transport-play {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 4px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #111113;
+  transition: background-color 100ms ease, transform 100ms ease;
+}
+.transport-play:hover {
+  background: var(--accent-dim);
+}
+.transport-play:active {
+  transform: scale(0.94);
+}
+
+.volume-slider {
+  width: 70px;
+  accent-color: var(--accent);
+}
+
+.select-sm {
+  height: 22px;
+  font-size: 11px;
+  padding-right: 20px;
+  max-width: 130px;
+}

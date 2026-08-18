@@ -1,0 +1,288 @@
+/* Timeline — toolbar, label column, canvas surface, playhead */
+
+.tl-toolbar {
+  flex: 0 0 var(--timeline-toolbar-h);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tl-toolbar::-webkit-scrollbar {
+  height: 0;
+}
+
+.tl-tool-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.tl-sep {
+  width: 1px;
+  height: 16px;
+  margin: 0 5px;
+  background: var(--border-default);
+}
+
+.tl-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  transition: border-color 100ms ease, color 100ms ease, background-color 100ms ease;
+}
+.tl-add-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.tl-zoom-slider {
+  width: 76px;
+  accent-color: var(--accent);
+}
+
+/* ---------- layout ---------- */
+.tl {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  background: var(--timeline-bg);
+}
+
+.tl-labels {
+  flex: 0 0 var(--track-label-w);
+  width: var(--track-label-w);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-default);
+  background: var(--bg);
+  overflow: hidden;
+}
+.tl-labels-spacer {
+  flex: 0 0 auto;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tl-label {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 12px 1fr;
+  grid-template-rows: auto auto;
+  align-content: center;
+  gap: 1px 4px;
+  padding: 0 4px;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background-color 100ms ease;
+}
+.tl-label:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.tl-label.is-hidden {
+  opacity: 0.45;
+}
+/* The main track is the anchor of the stack — overlays above, audio below. */
+.tl-label.is-main .tl-label-name {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.tl-label.is-main::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--border-strong);
+}
+
+.tl-label.is-locked::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-left: 2px solid var(--warning);
+  pointer-events: none;
+}
+.tl-label-icon {
+  grid-row: 1;
+  grid-column: 1;
+  color: var(--text-tertiary);
+}
+.tl-label-name {
+  grid-row: 1;
+  grid-column: 2;
+  font-size: 9.5px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tl-label-btn {
+  grid-row: 2;
+  width: 15px;
+  height: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--text-tertiary);
+  padding: 0;
+  transition: color 100ms ease, background-color 100ms ease;
+}
+.tl-label-btn:nth-of-type(1) { grid-column: 1; }
+.tl-label-btn:nth-of-type(2) { grid-column: 2; justify-self: start; }
+.tl-label-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.07);
+}
+.tl-label-btn.is-off { color: var(--text-tertiary); }
+.tl-label-btn.is-on { color: var(--warning); }
+
+.tl-track-hint {
+  flex: 0 0 auto;
+  padding: 5px 4px;
+  border-top: 1px dashed var(--border-subtle);
+  color: var(--text-tertiary);
+  font-size: 8.5px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* ---------- canvas surface ---------- */
+.tl-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tl-surface {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.tl-canvas {
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+/* Playhead — moved by a CSS variable the RAF loop writes. No React involved. */
+.playhead-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--playhead);
+  transform: translateX(var(--playhead-x, 0px));
+  will-change: transform;
+  pointer-events: none;
+  z-index: 3;
+}
+.playhead-head {
+  position: absolute;
+  top: 0;
+  left: -5px;
+  width: 11px;
+  height: 9px;
+  background: var(--playhead);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  pointer-events: auto;
+}
+
+/* Labels scroll with the lanes; the ruler spacer above them does not. */
+.tl-labels-scroll {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+/* Shown mid-drag when releasing would create a track. */
+.tl-spawn-hint {
+  position: absolute;
+  left: 0;
+  right: 11px;
+  top: var(--ruler-h);
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius-xs);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ---------- scrollbars ---------- */
+.tl-sb {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+}
+.tl-sb-horizontal {
+  flex: 0 0 11px;
+  height: 11px;
+  border-top: 1px solid var(--border-subtle);
+}
+.tl-sb-vertical {
+  position: absolute;
+  top: var(--ruler-h);
+  right: 0;
+  bottom: 0;
+  width: 11px;
+  border-left: 1px solid var(--border-subtle);
+  z-index: 4;
+}
+
+.tl-sb-thumb {
+  position: absolute;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background-color 120ms ease;
+}
+.tl-sb-horizontal .tl-sb-thumb {
+  top: 2px;
+  bottom: 2px;
+  min-width: 28px;
+}
+.tl-sb-vertical .tl-sb-thumb {
+  left: 2px;
+  right: 2px;
+  min-height: 28px;
+}
+.tl-sb:hover .tl-sb-thumb {
+  background: rgba(255, 255, 255, 0.32);
+}
+/* Green only while this thumb is actually held. Driven by state, not :active —
+   pointerdown lands on the track, so :active never reached the thumb. */
+.tl-sb-thumb.is-held,
+.tl-sb:hover .tl-sb-thumb.is-held {
+  background: var(--accent);
+}
+
+.tl-sb-horizontal { cursor: default; }
+.tl-sb-horizontal .tl-sb-thumb { cursor: grab; }
+.tl-sb-vertical .tl-sb-thumb { cursor: grab; }
+body.is-scrollbar-drag * { cursor: grabbing !important; }

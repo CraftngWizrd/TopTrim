@@ -1,0 +1,71 @@
+/* TopTrim v2 design tokens — Section 3 of the spec.
+   Electric green identity, refined and less dense than v1. */
+
+:root {
+  /* Surfaces */
+  --bg: #111113;
+  --bg-raised: #18181c;
+  --bg-elevated: #1f1f24;
+  --bg-overlay: #27272d;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-default: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  /* Text */
+  --text-primary: #f0ede8;
+  --text-secondary: #999590;
+  --text-tertiary: #555250;
+
+  /* Accent */
+  --accent: #00e676;
+  --accent-dim: #00c15e;
+  --accent-subtle: rgba(0, 230, 118, 0.1);
+  --accent-glow: rgba(0, 230, 118, 0.2);
+  --accent-rgb: 0, 230, 118;
+
+  /* Status */
+  --danger: #ff5252;
+  --warning: #ffb300;
+  --success: #00e676;
+
+  /* Timeline */
+  --timeline-bg: #0a090d;
+  --playhead: #ff5252;
+  --keyframe: #00e676;
+  --track-video: #1a3528;
+  --track-audio: #152030;
+  --track-text: #201528;
+  --track-sticker: #28201a;
+  --track-effect: #202018;
+
+  /* Typography */
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Radius */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  /* Fixed layout metrics — read by both CSS and the Canvas timeline renderer. */
+  --titlebar-h: 34px;
+  --assettabs-h: 42px;
+  --left-panel-w: 300px;
+  --right-panel-w: 280px;
+  --timeline-toolbar-h: 30px;
+  --track-label-w: 60px;
+  --ruler-h: 20px;
+
+  /* Playhead position, written by PlaybackEngine on every animation frame.
+     Nothing re-renders in React while this changes. */
+  --playhead-x: 0px;
+
+  /* Shadows */
+  --shadow-panel: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-modal: 0 24px 64px rgba(0, 0, 0, 0.7);
+}
