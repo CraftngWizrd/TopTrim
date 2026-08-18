@@ -16,6 +16,7 @@
     "rebuild": "electron-rebuild -f -w better-sqlite3",
     "postinstall": "electron-builder install-app-deps",
     "dist": "npm run build && electron-builder",
+    "release": "npm run build && electron-builder --publish always",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -54,6 +55,8 @@
   "build": {
     "appId": "com.toptrim.app",
     "productName": "TopTrim",
+    "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
+    "compression": "maximum",
     "files": [
       "dist/**/*",
       "dist-electron/**/*",
@@ -66,11 +69,23 @@
       "output": "release",
       "buildResources": "build"
     },
+    "publish": {
+      "provider": "github",
+      "owner": "CraftngWizrd",
+      "repo": "TopTrim"
+    },
     "win": {
       "target": [
         "nsis"
       ],
       "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "${productName}-Setup-${version}.${ext}"
     },
     "mac": {
       "target": [

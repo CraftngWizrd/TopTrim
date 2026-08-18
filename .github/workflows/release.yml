@@ -1,0 +1,39 @@
+name: Release
+
+# Push a version tag to build the installer and attach it to a GitHub Release:
+#   npm version patch   # bumps package.json and creates a vX.Y.Z tag
+#   git push --follow-tags
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write # electron-builder needs this to create/upload the Release
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # postinstall runs `electron-builder install-app-deps`, which rebuilds
+      # better-sqlite3 against Electron's ABI. predev/prebuild copy the
+      # ffmpeg.wasm core into public/ffmpeg (not committed).
+      - run: npm ci
+
+      # build (tsc + vite renderer + electron bundles) then package the
+      # one-click NSIS installer and upload it to the release for this tag.
+      - name: Build and publish installer
+        run: npm run release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+# To also ship macOS (.dmg) and Linux (.AppImage), add a matrix over
+# [windows-latest, macos-latest, ubuntu-latest]. macOS builds are usable only
+# once code-signed/notarized, so Windows is the default here.
