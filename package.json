@@ -73,7 +73,8 @@
     "publish": {
       "provider": "github",
       "owner": "CraftngWizrd",
-      "repo": "TopTrim"
+      "repo": "TopTrim",
+      "releaseType": "release"
     },
     "win": {
       "target": [
